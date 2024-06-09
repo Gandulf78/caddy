@@ -2,7 +2,7 @@ name: Docker
 
 on:
   release:
-    types: [released]
+    types: [published]
 
 env:
   # Hostname of your registry
