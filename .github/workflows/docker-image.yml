@@ -49,7 +49,8 @@ jobs:
             org.opencontainers.image.revision=${{ env.SHA }}
           tags: |
             type=semver,pattern={{version}}
-
+            type=sha,prefix=,suffix=,format=short
+            
       # Build and push Docker image with Buildx
       # (don't push on PR, load instead)
       - name: Build and push Docker image
