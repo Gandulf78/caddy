@@ -2,7 +2,8 @@ name: Docker
 
 on:
   push:
-    tags: ["*"]
+    tags:
+      - "v*.*.*"
     branches:
       - "main"
   pull_request:
@@ -47,8 +48,7 @@ jobs:
           labels: |
             org.opencontainers.image.revision=${{ env.SHA }}
           tags: |
-            type=edge,branch=$repo.default_branch
-            type=semver,pattern=v{{version}}
+            type=semver,pattern={{version}}
             type=sha,prefix=,suffix=,format=short
 
       # Build and push Docker image with Buildx
