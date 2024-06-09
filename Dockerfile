@@ -1,17 +1,16 @@
 # Étape de construction
-FROM caddy:2.8.0-rc.1-builder-alpine AS builder
+FROM caddy:2.8.4-builder-alpine AS builder
 
 # Installer xcaddy
 RUN go install --x github.com/caddyserver/xcaddy/cmd/xcaddy@latest
 
 # Construire Caddy avec les modules supplémentaires
-RUN xcaddy build v2.8.0-rc.1 \
+RUN xcaddy build v2.8.4 \
     --with github.com/caddy-dns/cloudflare \
-    --with github.com/WeidiDeng/caddy-cloudflare-ip \
     --with github.com/caddyserver/transform-encoder
 
 # Étape finale
-FROM caddy:2.8.0-rc.1-alpine
+FROM caddy:2.8.4-alpine
 
 # Créer un utilisateur non-root et un groupe
 RUN addgroup -S caddygroup && adduser -S caddyuser -G caddygroup
