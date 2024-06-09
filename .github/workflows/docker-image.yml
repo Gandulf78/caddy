@@ -8,7 +8,7 @@ on:
       - "*.*.*"
     branches:
       - "main"
-
+            
 env:
   # Hostname of your registry
   REGISTRY: docker.io
@@ -49,13 +49,12 @@ jobs:
             org.opencontainers.image.revision=${{ env.SHA }}
           tags: |
             type=semver,pattern={{version}}
-            type=sha,prefix=,suffix=,format=short
 
       # Build and push Docker image with Buildx
       # (don't push on PR, load instead)
       - name: Build and push Docker image
         id: build-and-push
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v5.3.0
         with:
           context: .
           sbom: ${{ github.event_name != 'pull_request' }}
