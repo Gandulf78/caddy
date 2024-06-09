@@ -3,12 +3,7 @@ name: Docker
 on:
   release:
     types: [published]
-  push:
-    tags:
-      - "*.*.*"
-    branches:
-      - "main"
-            
+
 env:
   # Hostname of your registry
   REGISTRY: docker.io
