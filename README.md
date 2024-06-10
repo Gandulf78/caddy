@@ -1,11 +1,9 @@
 # caddy-cloudflare
 Caddy docker image with the following modules :
 
-github.com/caddy-dns/cloudflare
-
-github.com/WeidiDeng/caddy-cloudflare-ip
-
-github.com/caddyserver/transform-encoder
+    github.com/caddy-dns/cloudflare
+    github.com/WeidiDeng/caddy-cloudflare-ip
+    github.com/caddyserver/transform-encoder
 
 The caddy image is built with non-root user. 
 
