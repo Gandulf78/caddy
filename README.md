@@ -1,4 +1,4 @@
-# caddy-cloudflare
+# caddy-cloudflare-ip
 Caddy docker image with the following modules :
 
     github.com/caddy-dns/cloudflare
