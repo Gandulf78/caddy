@@ -2,6 +2,7 @@
 Caddy docker image with the following modules :
 
     github.com/caddy-dns/cloudflare
+    github.com/caddy-dns/duckdns
     github.com/caddyserver/transform-encoder
     github.com/mholt/caddy-webdav
 
