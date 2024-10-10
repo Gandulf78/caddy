@@ -6,7 +6,6 @@ RUN go install --x github.com/caddyserver/xcaddy/cmd/xcaddy@latest
 
 # Construire Caddy avec les modules supplémentaires
 RUN xcaddy build v2.8.4 \
-    --with github.com/caddy-dns/duckdns \
     --with github.com/caddyserver/transform-encoder  \
     --with github.com/mholt/caddy-webdav
 
