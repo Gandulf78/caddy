@@ -1,5 +1,5 @@
-# Utilise une image de base officielle de Go pour compiler Caddy
-FROM golang:latest AS builder
+# Utilise la dernière version officielle de Go pour compiler Caddy
+FROM golang:1.23 AS builder
 
 # Installe les dépendances nécessaires pour Caddy
 RUN apt-get update && apt-get install -y \
@@ -27,7 +27,9 @@ COPY --from=builder /go/bin/caddy /usr/local/bin/caddy
 
 # Crée un dossier pour les fichiers de configuration
 RUN mkdir /etc/caddy
-COPY Caddyfile /etc/caddy/Caddyfile
+
+# Crée le Caddyfile directement dans le Dockerfile
+RUN echo 'example.com {\n    root * /usr/share/caddy\n    file_server\n    encode gzip\n}' > /etc/caddy/Caddyfile
 
 # Change le propriétaire des fichiers
 RUN chown -R caddy:caddy /etc/caddy /usr/local/bin/caddy
@@ -39,4 +41,4 @@ EXPOSE 80 443
 USER caddy
 
 # Démarre Caddy et Tailscale
-CMD tailscaled & tailscale up --accept-routes --authkey ${TAILSCALE_AUTH_KEY} --hostname ${TAILSCALE_HOSTNAME} && caddy run --config /etc/caddy/Caddyfile
+CMD ["sh", "-c", "tailscaled & tailscale up --accept-routes --authkey ${TAILSCALE_AUTH_KEY} --hostname ${TAILSCALE_HOSTNAME} && caddy run --config /etc/caddy/Caddyfile"]
