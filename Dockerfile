@@ -1,20 +1,18 @@
-# Utilise la dernière version officielle de Go pour compiler Caddy
+# Étape de construction
 FROM golang:1.23 AS builder
 
-# Installe les dépendances nécessaires pour Caddy
+# Installe les dépendances nécessaires
 RUN apt-get update && apt-get install -y \
     curl \
     git \
-    build-essential
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
 
-# Télécharge et compile Caddy avec les modules supplémentaires
+# Installe xcaddy
 RUN go install github.com/caddyserver/xcaddy/cmd/xcaddy@latest
-RUN xcaddy build \
-    --with github.com/caddyserver/transform-encoder \
-    --with github.com/mholt/caddy-webdav
 
-# Vérifie que le binaire Caddy a été généré
-RUN ls /go/bin
+# Compile Caddy avec les modules spécifiés
+RUN xcaddy build --with github.com/caddyserver/transform-encoder --with github.com/mholt/caddy-webdav
 
 # Étape finale
 FROM alpine:latest
@@ -25,8 +23,11 @@ RUN apk add --no-cache tailscale
 # Crée un utilisateur non privilégié
 RUN addgroup -S caddy && adduser -S caddy -G caddy
 
-# Copie Caddy compilé depuis l'étape de construction
-COPY --from=builder /go/bin/caddy /usr/local/bin/caddy
+# Copie le binaire Caddy compilé
+COPY --from=builder /go/caddy /usr/local/bin/caddy
+
+# Vérifie si le binaire a été copié
+RUN ls -l /usr/local/bin
 
 # Crée un dossier pour les fichiers de configuration
 RUN mkdir /etc/caddy
