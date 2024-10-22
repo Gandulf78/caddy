@@ -1,3 +1,4 @@
+# Étape de construction
 FROM golang:1.23 AS builder
 
 # Installe les dépendances nécessaires
@@ -43,8 +44,5 @@ ENV TS_PERMIT_CERT_UID=caddy
 # Expose le port 80 et 443
 EXPOSE 80 443
 
-# Passe à l'utilisateur non privilégié
-USER caddy
-
-# Démarre Caddy et Tailscale
-CMD ["sh", "-c", "tailscaled & tailscale up --accept-routes --authkey ${TAILSCALE_AUTH_KEY} --hostname ${TAILSCALE_HOSTNAME} && caddy run --config /etc/caddy/Caddyfile"]
+# Démarre Tailscale et Caddy en tant que root
+CMD ["sh", "-c", "tailscaled & tailscale up --accept-routes --authkey ${TAILSCALE_AUTH_KEY} --hostname ${TAILSCALE_HOSTNAME} && su -c 'caddy run --config /etc/caddy/Caddyfile' caddy"]
