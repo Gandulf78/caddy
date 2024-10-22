@@ -8,6 +8,8 @@ RUN go install --x github.com/caddyserver/xcaddy/cmd/xcaddy@latest
 RUN xcaddy build v2.8.4 \
     --with github.com/caddyserver/transform-encoder  \
     --with github.com/mholt/caddy-webdav
+    --with github
+    --with github.com/tailscale/caddy-tailscale
 
 # Étape finale
 FROM caddy:2.8.4-alpine
