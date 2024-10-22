@@ -1,4 +1,3 @@
-# Étape de construction
 FROM golang:1.23 AS builder
 
 # Installe les dépendances nécessaires
@@ -37,6 +36,9 @@ RUN echo 'example.com {\n    root * /usr/share/caddy\n    file_server\n    encod
 
 # Change le propriétaire des fichiers
 RUN chown -R caddy:caddy /etc/caddy /usr/local/bin/caddy
+
+# Définit la variable d'environnement pour Tailscale
+ENV TS_PERMIT_CERT_UID=caddy
 
 # Expose le port 80 et 443
 EXPOSE 80 443
