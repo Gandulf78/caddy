@@ -13,6 +13,9 @@ RUN xcaddy build \
     --with github.com/caddyserver/transform-encoder \
     --with github.com/mholt/caddy-webdav
 
+# Vérifie que le binaire Caddy a été généré
+RUN ls /go/bin
+
 # Étape finale
 FROM alpine:latest
 
