@@ -3,6 +3,8 @@ Caddy docker image with the following modules :
 
     github.com/caddyserver/transform-encoder
     github.com/mholt/caddy-webdav
+    github.com/tailscale/caddy-tailscale
+    
 
 The caddy image is built with non-root user. 
 
