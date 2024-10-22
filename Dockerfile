@@ -1,35 +1,42 @@
-# Étape de construction
-FROM caddy:2.8.4-builder-alpine AS builder
+# Utilise une image de base officielle de Go pour compiler Caddy
+FROM golang:latest AS builder
 
-# Installer xcaddy
-RUN go install --x github.com/caddyserver/xcaddy/cmd/xcaddy@latest
+# Installe les dépendances nécessaires pour Caddy
+RUN apt-get update && apt-get install -y \
+    curl \
+    git \
+    build-essential
 
-# Construire Caddy avec les modules supplémentaires
-RUN xcaddy build v2.8.4 \
-    --with github.com/caddyserver/transform-encoder  \
-    --with github.com/mholt/caddy-webdav \
-    --with github.com/tailscale/caddy-tailscale
+# Télécharge et compile Caddy avec les modules supplémentaires
+RUN go install github.com/caddyserver/xcaddy/cmd/xcaddy@latest
+RUN xcaddy build \
+    --with github.com/caddyserver/transform-encoder \
+    --with github.com/mholt/caddy-webdav
 
 # Étape finale
-FROM caddy:2.8.4-alpine
+FROM alpine:latest
 
-# Créer un utilisateur non-root et un groupe
-RUN addgroup -S caddygroup && adduser -S caddyuser -G caddygroup
+# Installe Tailscale
+RUN apk add --no-cache tailscale
 
-# Créer un répertoire pour les fichiers de Caddy et définir les permissions
-RUN mkdir -p /etc/caddy /data /config && \
-    chown -R caddyuser:caddygroup /etc/caddy /data /config
+# Crée un utilisateur non privilégié
+RUN addgroup -S caddy && adduser -S caddy -G caddy
 
-# Copier l'exécutable Caddy personnalisé depuis l'étape de construction
-COPY --from=builder /usr/bin/caddy /usr/bin/caddy
+# Copie Caddy compilé depuis l'étape de construction
+COPY --from=builder /go/bin/caddy /usr/local/bin/caddy
 
-# Changer l'utilisateur pour caddyuser
-USER caddyuser
+# Crée un dossier pour les fichiers de configuration
+RUN mkdir /etc/caddy
+COPY Caddyfile /etc/caddy/Caddyfile
 
-# Exposer les ports non privilégiés
-EXPOSE 80
-EXPOSE 443
+# Change le propriétaire des fichiers
+RUN chown -R caddy:caddy /etc/caddy /usr/local/bin/caddy
 
-# Commande pour démarrer Caddy
-CMD ["caddy", "run", "--config", "/etc/caddy/Caddyfile", "--adapter", "caddyfile"]
+# Expose le port 80 et 443
+EXPOSE 80 443
 
+# Passe à l'utilisateur non privilégié
+USER caddy
+
+# Démarre Caddy et Tailscale
+CMD tailscaled & tailscale up --accept-routes --authkey ${TAILSCALE_AUTH_KEY} --hostname ${TAILSCALE_HOSTNAME} && caddy run --config /etc/caddy/Caddyfile
