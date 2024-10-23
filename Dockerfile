@@ -2,8 +2,9 @@
 FROM caddy:2.8.4-builder-alpine AS builder
 
 RUN xcaddy build \
-    --github.com/mholt/caddy-webdav \
-    --github.com/tailscale/caddy-tailscale
+    --with github.com/caddyserver/transform-encoder \
+    --with github.com/mholt/caddy-webdav \
+    --with github.com/tailscale/caddy-tailscale
     
 # Étape finale
 FROM caddy:2.8.4-alpine
