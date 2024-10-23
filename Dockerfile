@@ -5,7 +5,6 @@ FROM caddy:2.8.4-builder-alpine AS builder
 RUN go install --x github.com/caddyserver/xcaddy/cmd/xcaddy@latest
 
 RUN xcaddy build \
-    --github.com/caddyserver/transform-encoder \
     --github.com/mholt/caddy-webdav \
     --github.com/tailscale/caddy-tailscale
     
