@@ -1,9 +1,6 @@
 # Étape de construction
 FROM caddy:2.8.4-builder-alpine AS builder
 
-# Installer xcaddy
-RUN go install --x github.com/caddyserver/xcaddy/cmd/xcaddy@latest
-
 RUN xcaddy build \
     --github.com/mholt/caddy-webdav \
     --github.com/tailscale/caddy-tailscale
