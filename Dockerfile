@@ -1,7 +1,7 @@
 # Étape de construction
 FROM caddy:2.8.4-builder-alpine AS builder
 
-RUN xcaddy build \
+RUN xcaddy build v2.8.4 \
     --with github.com/caddyserver/transform-encoder \
     --with github.com/mholt/caddy-webdav \
     --with github.com/tailscale/caddy-tailscale
